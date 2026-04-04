@@ -1,0 +1,13 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+   "target": "es2016",
+    "module": "commonjs", // Use commonjs for modules
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    //"verbatimModuleSyntax": false, // Disable the strict check
+    "esModuleInterop": true, // Enables default imports for commonjs modules
+    "skipLibCheck": true
+  }
+}
