@@ -4,6 +4,7 @@ import http from "http"
 import app from "./interface_adapter/express/app"
 import container from "./infrastructure/di/container"
 import authRouterFactory from "./interface_adapter/http/routes/auth.routes"
+import { errorHandlerMiddleware } from "./interface_adapter/http/middlewares/error.handler"
 dotenv.config()
 
 const PORT = process.env.PORT
@@ -18,6 +19,8 @@ async function StartServer(){
 
         app.use('/api/auth', authRouter)
 
+         app.use(errorHandlerMiddleware)
+
         HttpServer.listen(PORT, ()=> console.log(`Server running on : http://localhost:${PORT}`))
     } catch (error) {
         console.error("Error in start Server!", error)
@@ -25,5 +28,4 @@ async function StartServer(){
 }
 
 StartServer()
-console.log("hello world")
 

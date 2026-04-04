@@ -3,7 +3,6 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 
 const app = express()
-console.log("client", process.env.CLIENT_URL)
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))

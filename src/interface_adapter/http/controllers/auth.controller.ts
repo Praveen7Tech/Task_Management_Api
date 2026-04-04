@@ -1,12 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { ISignUpUseCase } from "../../../application/interfaces/usecase/auth.usecase.interface";
-import { SignupRequestSchema } from "../validators/auth/auth.validator";
+import { LoginRequestSchema, ResendOtpRequestSchema, SignupRequestSchema, VerifyOtpRequestSchema } from "../validators/auth/auth.validator";
 import { StatusCode } from "../../../common/constants/status.enum";
 import { MESSAGES } from "../../../common/constants/message";
+import { IVerifyOtpUsecase } from "../../../application/interfaces/usecase/verifyOtp.usecase.interface";
+import { LoginRequestDTO, ResendOtpRequestDTO, VerifyOtpRequestDTO } from "../../../application/dto/auth/verify-otp.dto";
+import { IResendOtpUseCase } from "../../../application/interfaces/usecase/resendOtp.usecase.interface";
+import { ILoginUsecase } from "../../../application/interfaces/usecase/login.usecase.interface";
+import { COOKIE_OPTIONS } from "../../../common/cookie/cookie.option";
 
 export class AuthController{
     constructor(
-        private readonly signupUsecase: ISignUpUseCase
+        private readonly _signupUsecase: ISignUpUseCase,
+        private readonly _verifyOtoUseCase: IVerifyOtpUsecase,
+        private readonly _resendOtpUsecase: IResendOtpUseCase,
+        private readonly _loginUsecase: ILoginUsecase,
     ){}
 
     signup = async(req:Request, res:Response, next:NextFunction)=>{
@@ -14,11 +22,51 @@ export class AuthController{
             console.log('auth controller')
             const data = SignupRequestSchema.parse(req.body)
 
-            await this.signupUsecase.execute(data)
+            await this._signupUsecase.execute(data)
 
             return res.status(StatusCode.CREATED).json({message:MESSAGES.OTP_SEND});
         } catch (error) {
-            console.error(error)
+            next(error)
+        }
+    }
+
+
+    verfiyOtp = async(req:Request, res:Response, next: NextFunction)=>{
+        try {
+            console.log("body", req.body)
+            const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
+
+            await this._verifyOtoUseCase.execute(dto)
+
+            return res.status(StatusCode.OK).json({message: MESSAGES.OTP_VERIFIED})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    resendOtp = async(req: Request, res:Response, next: NextFunction)=>{
+        try {
+            const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
+            await this._resendOtpUsecase.execute(dto)
+            
+            return res.status(StatusCode.OK).json({message:MESSAGES.OTP_RESEND_SUCCESS})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    login = async(req:Request, res:Response, next: NextFunction)=>{
+        try {
+            const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
+
+            const result = await this._loginUsecase.execute(dto)
+
+            // send access 
+            res.cookie('refreshToken', result.accessToken, COOKIE_OPTIONS);
+
+            return res.status(StatusCode.OK).json({message: MESSAGES.VERIFICATION_COMPLETE,user: result.user})
+        } catch (error) {
+            next(error)
         }
     }
 }

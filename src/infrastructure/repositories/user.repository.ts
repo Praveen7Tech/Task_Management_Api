@@ -1,8 +1,7 @@
-import { PendingUserRegistration } from "../../application/dto/auth/signup.dto";
+
 import { User } from "../../domain/entities/user";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { UserMapper } from "../database/mappers/user.mapper";
-import { PendingUserModel } from "../database/models/pending.user.model";
 import { UserModel } from "../database/models/user.model";
 
 export class UserRepository implements IUserRepository{
@@ -16,17 +15,9 @@ export class UserRepository implements IUserRepository{
         return UserMapper.toDomain(doc);
     }
 
-    async savePending(data: PendingUserRegistration): Promise<void> {
-        await PendingUserModel.findOneAndUpdate(
-            { email: data.email },
-            { 
-                email: data.email,
-                otp: data.otp,
-                payload: data.payload, 
-                otpGeneratedAt: new Date(),
-                createdAt: new Date() 
-            },
-            { upsert: true }
-        );
+    async create(data: Partial<User>): Promise<void> {
+        const user = new UserModel(data);
+
+        await user.save();
     }
 }

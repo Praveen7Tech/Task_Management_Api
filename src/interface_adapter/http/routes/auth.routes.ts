@@ -9,6 +9,9 @@ export default (container: AwilixContainer): Router =>{
     const authController = container.resolve<AuthController>('authController')
 
     router.post('/register', authController.signup)
+    router.post('/verify-otp', authController.verfiyOtp)
+    router.post('/resend-otp', authController.resendOtp)
+    router.post("/login", authController.login)
 
     return router;
 }

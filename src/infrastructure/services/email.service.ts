@@ -18,7 +18,6 @@ export class EmailService implements IEmailService {
         });
     }
 
-    // New Method: Handles the template internally to keep UseCase clean
     async sendOtpEmail(email: string, otp: string): Promise<void> {
         const template = EmailFormat.otp(otp);
         await this.transporter.sendMail({
