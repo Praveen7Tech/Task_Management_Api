@@ -8,7 +8,7 @@ export default (container: AwilixContainer): Router =>{
 
     const authController = container.resolve<AuthController>('authController')
 
-    router.post('/signup', authController.signup)
+    router.post('/register', authController.signup)
 
     return router;
 }
