@@ -20,4 +20,8 @@ export class UserRepository implements IUserRepository{
 
         await user.save();
     }
+
+    async findById(id: string): Promise<User | null> {
+        return UserModel.findById(id)
+    }
 }

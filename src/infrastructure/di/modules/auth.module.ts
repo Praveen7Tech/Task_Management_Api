@@ -10,6 +10,7 @@ import { VerificationRepository } from "../../repositories/verification.reposito
 import { ResendOtpUseCase } from "../../../usecases/auth/resendOtp.UseCase";
 import { LoginUseCase } from "../../../usecases/auth/login.UseCase";
 import { JwtTokenService } from "../../services/token.service";
+import { HealthCheckUseCase } from "../../../usecases/auth/healthCheck.UseCase";
 
 export const authModule = {
 
@@ -24,6 +25,7 @@ export const authModule = {
     _verifyOtoUseCase: asClass(VerifyOtpUsecase).scoped(),
     _resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
     _loginUsecase: asClass(LoginUseCase).scoped(),
+    _healthCheckUsecase: asClass(HealthCheckUseCase).singleton(),
 
     authController: asClass(AuthController).singleton()
 }

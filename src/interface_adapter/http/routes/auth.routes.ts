@@ -12,6 +12,8 @@ export default (container: AwilixContainer): Router =>{
     router.post('/verify-otp', authController.verfiyOtp)
     router.post('/resend-otp', authController.resendOtp)
     router.post("/login", authController.login)
+    router.get('/health', authController.health)
+    router.put('/logout', authController.logout)
 
     return router;
 }
