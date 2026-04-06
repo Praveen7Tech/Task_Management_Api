@@ -21,7 +21,6 @@ export class AuthController{
 
     signup = async(req:Request, res:Response, next:NextFunction)=>{
         try {
-            console.log('auth controller')
             const data = SignupRequestSchema.parse(req.body)
 
             await this._signupUsecase.execute(data)
@@ -35,7 +34,6 @@ export class AuthController{
 
     verfiyOtp = async(req:Request, res:Response, next: NextFunction)=>{
         try {
-            console.log("body", req.body)
             const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
 
             await this._verifyOtoUseCase.execute(dto)
