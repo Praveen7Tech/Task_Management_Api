@@ -22,3 +22,7 @@ export interface LoginResponseDTO{
   user:User;
   accessToken: string
 }
+
+export interface AuthStatusRequestDTO {
+  accessToken: string;
+}

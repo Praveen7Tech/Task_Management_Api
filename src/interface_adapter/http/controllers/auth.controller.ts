@@ -8,6 +8,7 @@ import { LoginRequestDTO, ResendOtpRequestDTO, VerifyOtpRequestDTO } from "../..
 import { IResendOtpUseCase } from "../../../application/interfaces/usecase/resendOtp.usecase.interface";
 import { ILoginUsecase } from "../../../application/interfaces/usecase/login.usecase.interface";
 import { COOKIE_OPTIONS } from "../../../common/cookie/cookie.option";
+import { IHealthCheckUseCase } from "../../../application/interfaces/usecase/health.check.usecase.interface";
 
 export class AuthController{
     constructor(
@@ -15,6 +16,7 @@ export class AuthController{
         private readonly _verifyOtoUseCase: IVerifyOtpUsecase,
         private readonly _resendOtpUsecase: IResendOtpUseCase,
         private readonly _loginUsecase: ILoginUsecase,
+        private readonly _healthCheckUsecase: IHealthCheckUseCase
     ){}
 
     signup = async(req:Request, res:Response, next:NextFunction)=>{
@@ -60,11 +62,37 @@ export class AuthController{
             const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
 
             const result = await this._loginUsecase.execute(dto)
-
             // send access 
-            res.cookie('refreshToken', result.accessToken, COOKIE_OPTIONS);
+            res.cookie('accessToken', result.accessToken, COOKIE_OPTIONS);
 
             return res.status(StatusCode.OK).json({message: MESSAGES.VERIFICATION_COMPLETE,user: result.user})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    health = async(req:Request, res:Response, next: NextFunction)=>{
+        try {
+           const accessToken = req.cookies?.accessToken
+            if (!accessToken) {
+                return res.status(StatusCode.OK).json({ user: null});
+            }
+
+            const result = await this._healthCheckUsecase.execute({ accessToken });
+
+            res.cookie("accessToken", result.accessToken, COOKIE_OPTIONS);
+        
+            return res.status(StatusCode.OK).json(result.user);
+        } catch (error) {
+            res.clearCookie("accessToken", COOKIE_OPTIONS);
+            next(error)
+        }
+    }
+
+    logout = async(req: Request, res:Response, next: NextFunction)=>{
+        try {
+            res.clearCookie('accessToken', COOKIE_OPTIONS);
+            return res.status(StatusCode.OK).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
         } catch (error) {
             next(error)
         }
