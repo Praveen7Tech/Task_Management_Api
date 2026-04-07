@@ -1,7 +1,13 @@
+import dotenv from "dotenv"
+dotenv.config()
+
+const IS_PRODUCTION = process.env.NODE_ENV === "production" 
+console.log("node env : ", IS_PRODUCTION)
+
 export const COOKIE_OPTIONS = {
     httpOnly: true,
-    sameSite: "lax" as const,
+    sameSite: IS_PRODUCTION ? "none" : "lax" as const,
+    secure: IS_PRODUCTION ? true : false,
     path: "/",
-    secure: false,
     maxAge: 7*24*60*60*1000,
 }
