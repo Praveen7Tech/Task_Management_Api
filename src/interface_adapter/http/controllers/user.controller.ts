@@ -33,11 +33,13 @@ export class UserController{
     getTasks = async(req: Request, res: Response, next: NextFunction)=>{
         try {
             const id = req.user?.id
-             if(!id){
+            const page = Number(req.query.page) 
+            const limit =  Number(req.query.limit) 
+             if(!id || !page || !limit){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
             
-            const result = await this._getTasksUsecase.execute()
+            const result = await this._getTasksUsecase.execute(page, limit)
 
             return res.status(StatusCode.CREATED).json(result)
         } catch (error) {
