@@ -11,7 +11,7 @@ export class HealthCheckUseCase implements IHealthCheckUseCase{
     ){}
 
     async execute(request: AuthStatusRequestDTO): Promise<LoginResponseDTO> {
-        const payload = await this._tokenService.verifyAccessToken(request.accessToken);
+        const payload = await this._tokenService.verifyRefreshToken(request.refreshToken);
         if (!payload) {
             throw new BadRequestError("Invalid refresh token");
         }
@@ -23,15 +23,16 @@ export class HealthCheckUseCase implements IHealthCheckUseCase{
 
         const payloadTkn = { id: userData.id.toString(), email: userData.email };
         const newAccessToken = await this._tokenService.generateAccessToken(payloadTkn);
-
+        const newRefreshToken = await this._tokenService.generateRefressToken(payloadTkn)
 
         return {
-             user: {
+            user: {
                 id: userData.id,
                 name: userData.name,
                 email: userData.email
             },
-            accessToken: newAccessToken
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken
         }
     }
 }

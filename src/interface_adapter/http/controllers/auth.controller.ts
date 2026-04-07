@@ -60,10 +60,14 @@ export class AuthController{
             const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
 
             const result = await this._loginUsecase.execute(dto)
-            // send access 
-            res.cookie('accessToken', result.accessToken, COOKIE_OPTIONS);
+            // set cookie
+            res.cookie('accessToken', result.accessToken, COOKIE_OPTIONS)
+            res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-            return res.status(StatusCode.OK).json({message: MESSAGES.VERIFICATION_COMPLETE,user: result.user})
+            return res.status(StatusCode.OK).json({
+                message: MESSAGES.VERIFICATION_COMPLETE,
+                user: result.user
+            })
         } catch (error) {
             next(error)
         }
@@ -71,25 +75,28 @@ export class AuthController{
 
     health = async(req:Request, res:Response, next: NextFunction)=>{
         try {
-           const accessToken = req.cookies?.accessToken
-            if (!accessToken) {
+           const refreshToken = req.cookies?.refreshToken
+            if (!refreshToken) {
                 return res.status(StatusCode.OK).json({ user: null});
             }
 
-            const result = await this._healthCheckUsecase.execute({ accessToken });
+            const result = await this._healthCheckUsecase.execute({ refreshToken });
 
-            res.cookie("accessToken", result.accessToken, COOKIE_OPTIONS);
+            res.cookie('accessToken', result.accessToken, COOKIE_OPTIONS)
+            res.cookie("refreshToken", result.refreshToken, COOKIE_OPTIONS);
         
-            return res.status(StatusCode.OK).json(result.user);
+            return res.status(StatusCode.OK).json({user:result.user, accessToken:result.accessToken});
         } catch (error) {
-            res.clearCookie("accessToken", COOKIE_OPTIONS);
+            res.clearCookie("accessToken")
+            res.clearCookie("refreshToken");
             next(error)
         }
     }
 
     logout = async(req: Request, res:Response, next: NextFunction)=>{
         try {
-            res.clearCookie('accessToken', COOKIE_OPTIONS);
+            res.clearCookie("accessToken")
+            res.clearCookie('refreshToken');
             return res.status(StatusCode.OK).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
         } catch (error) {
             next(error)

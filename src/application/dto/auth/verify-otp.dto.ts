@@ -21,8 +21,9 @@ interface User{
 export interface LoginResponseDTO{
   user:User;
   accessToken: string
+  refreshToken: string
 }
 
 export interface AuthStatusRequestDTO {
-  accessToken: string;
+  refreshToken: string;
 }

@@ -26,6 +26,7 @@ export class LoginUseCase implements ILoginUsecase{
 
         const payload = {id: user.id, email: user.email,}
         const accessToken = await this._tokenService.generateAccessToken(payload)
+        const refreshToken = await this._tokenService.generateRefressToken(payload)
 
         const userData ={
             id: user.id,
@@ -35,7 +36,8 @@ export class LoginUseCase implements ILoginUsecase{
 
         return {
             user:userData,
-            accessToken
+            accessToken,
+            refreshToken
         }
     }
 }
