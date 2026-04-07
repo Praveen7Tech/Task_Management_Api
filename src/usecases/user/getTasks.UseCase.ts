@@ -7,15 +7,20 @@ export class GetTasksUseCase implements IGetTasksUseCase{
         private readonly _taskRepository: ITaskRepository
     ){}
 
-    async execute(): Promise<TaskDashboardData> {
-        const [tasks, stats] = await Promise.all([
-            this._taskRepository.findAll(),
+    async execute(page: number, limit: number): Promise<TaskDashboardData> {
+        const [{tasks, total}, stats] = await Promise.all([
+            this._taskRepository.findAll(page, limit),
             this._taskRepository.getStats(),
         ]);
+
+        const totalPages = Math.ceil(total / limit)
 
         return {
             task: tasks,
             status: stats,
+            total,
+            page,
+            totalPages
         };
     }
 }

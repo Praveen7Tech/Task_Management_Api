@@ -1,5 +1,5 @@
 // src/infrastructure/repositories/task.repository.ts
-import { TaskDashboardData, TaskStats } from "../../application/dto/user/task.type";
+import { PaginatedTasks, TaskDashboardData, TaskStats } from "../../application/dto/user/task.type";
 import { Task } from "../../domain/entities/task";
 import { ITaskRepository } from "../../domain/repositories/task.repository";
 import { TaskModel } from "../database/models/task.model";
@@ -22,9 +22,16 @@ export class TaskRepository implements ITaskRepository {
         return docs.map(doc => this._mapToEntity(doc));
     }
 
-    async findAll(): Promise<Task[]> {
-        const docs = await TaskModel.find();
-        return docs.map(doc => this._mapToEntity(doc));
+    async findAll(page: number, limit: number): Promise<PaginatedTasks> {
+        const skip =  (page - 1) * limit
+       const [docs, total] = await Promise.all([
+        TaskModel.find()
+                  .sort({createdAt: -1})
+                  .skip(skip)
+                  .limit(limit),
+        TaskModel.countDocuments()          
+       ])
+        return {tasks:docs.map(doc => this._mapToEntity(doc)),total}
     }
 
     async getStats(): Promise<TaskStats> {

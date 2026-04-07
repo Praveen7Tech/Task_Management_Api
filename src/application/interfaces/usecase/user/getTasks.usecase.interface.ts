@@ -1,5 +1,5 @@
 import { TaskDashboardData } from "../../../dto/user/task.type";
 
 export interface IGetTasksUseCase{
-    execute(): Promise<TaskDashboardData>
+    execute(page: number, limit: number): Promise<TaskDashboardData>
 }
