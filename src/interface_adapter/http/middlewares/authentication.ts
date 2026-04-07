@@ -17,14 +17,15 @@ declare global {
 const ACCESS_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET!;
 
 export const authenticationHandler = (req: Request, res: Response, next: NextFunction) => {
-    const cookie = req.cookies?.accessToken;
-
-    if (!cookie) {
-        return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+      return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
     }
 
+    const token = authHeader.split(" ")[1];
+
     try {
-        const decoded = jwt.verify(cookie, ACCESS_TOKEN_SECRET) as { id: string; email: string };
+        const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET) as { id: string; email: string };
         
         req.user = { 
             id: decoded.id, 

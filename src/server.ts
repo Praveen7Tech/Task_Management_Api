@@ -8,6 +8,7 @@ import authRouterFactory from "./interface_adapter/http/routes/auth.routes"
 import userRouterFactory from "./interface_adapter/http/routes/user.routes"
 import { errorHandlerMiddleware } from "./interface_adapter/http/middlewares/error.handler"
 import { initSocket } from "./infrastructure/config/socket.io"
+import { loggerMiddleware } from "./interface_adapter/http/middlewares/logger.middleware"
 
 
 const PORT = process.env.PORT
@@ -18,6 +19,7 @@ async function StartServer(){
         const httpServer= http.createServer(app)
 
         initSocket(httpServer);
+        app.use(loggerMiddleware)
 
         const authRouter = authRouterFactory(container)
         const userRouter = userRouterFactory(container)
