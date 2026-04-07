@@ -33,8 +33,9 @@ export class UserController{
     getTasks = async(req: Request, res: Response, next: NextFunction)=>{
         try {
             const id = req.user?.id
-            const page = Number(req.query.page) 
-            const limit =  Number(req.query.limit) 
+            const page = Number(req.query.page) || 1
+            const limit =  Number(req.query.limit) || 2
+            console.log("task", page, limit)
              if(!id || !page || !limit){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
