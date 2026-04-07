@@ -35,6 +35,8 @@ export class TaskRepository implements ITaskRepository {
     }
 
     async getStats(): Promise<TaskStats> {
+        const now = new Date().toISOString(); 
+
         const stats = await TaskModel.aggregate([
             {
                 $group: {
@@ -45,13 +47,26 @@ export class TaskRepository implements ITaskRepository {
                     },
                     pending: {
                         $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] }
+                    },
+                    overdue: {
+                        $sum: {
+                            $cond: [
+                                {
+                                    $and: [
+                                        { $ne: ["$status", "completed"] },
+                                        { $lt: ["$dueDate", now] }
+                                    ]
+                                },1, 0
+                            ]
+                        }
                     }
                 }
             }
         ]);
 
-        return stats[0] || { total: 0, completed: 0, pending: 0 };
+        return stats[0] || { total: 0, completed: 0, pending: 0, overdue: 0 };
     }
+
 
     async update(id: string, data: Partial<Task>): Promise<Task | null> {
         const updatedDoc = await TaskModel.findByIdAndUpdate(

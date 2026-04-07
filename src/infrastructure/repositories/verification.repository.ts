@@ -5,7 +5,7 @@ import { PendingUserModel } from "../database/models/pending.user.model";
 
 export class VerificationRepository implements IVerificationRepository {
     
-    async savePending(data: any): Promise<void> {
+    async savePending(data: Verification): Promise<void> {
         await PendingUserModel.findOneAndUpdate(
             { email: data.email },
             { 

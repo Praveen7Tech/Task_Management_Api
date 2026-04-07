@@ -1,4 +1,5 @@
 import dotenv from "dotenv"
+dotenv.config()
 import connectDB from "./infrastructure/config/db.config"
 import http from "http"
 import app from "./interface_adapter/express/app"
@@ -7,7 +8,7 @@ import authRouterFactory from "./interface_adapter/http/routes/auth.routes"
 import userRouterFactory from "./interface_adapter/http/routes/user.routes"
 import { errorHandlerMiddleware } from "./interface_adapter/http/middlewares/error.handler"
 import { initSocket } from "./infrastructure/config/socket.io"
-dotenv.config()
+
 
 const PORT = process.env.PORT
 

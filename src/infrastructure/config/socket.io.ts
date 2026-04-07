@@ -1,17 +1,18 @@
 import { Server } from "socket.io";
 import { Server as HttpServer } from "http";
 
+const CLIENT_URL = process.env.NODE_ENV === "development" ? process.env.CLIENT_URL : process.env.CLIENT_URL_PROD
+
 let io: Server;
 
 export const initSocket = (httpServer: HttpServer) => {
     
     io = new Server(httpServer, {
         cors: {
-            origin: [process.env.CLIENT_URL!],
+            origin: [CLIENT_URL!],
             credentials: true
         }
     });
-    console.log("url ",)
 
     io.on("connection", (socket) => {
         console.log(`⚡ Socket connected: ${socket.id}`);

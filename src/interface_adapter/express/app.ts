@@ -2,12 +2,14 @@ import express from "express"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
+const CLIENT_URL = process.env.NODE_ENV === "development" ? process.env.CLIENT_URL : process.env.CLIENT_URL_PROD
+
 const app = express()
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors({
-    origin:["http://localhost:5173"],
+    origin:[CLIENT_URL!],
     credentials: true,
     methods:['GET','POST','PUT','PATCH','DELETE','OPTIONS']
 }))
