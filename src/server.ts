@@ -6,6 +6,7 @@ import container from "./infrastructure/di/container"
 import authRouterFactory from "./interface_adapter/http/routes/auth.routes"
 import userRouterFactory from "./interface_adapter/http/routes/user.routes"
 import { errorHandlerMiddleware } from "./interface_adapter/http/middlewares/error.handler"
+import { initSocket } from "./infrastructure/config/socket.io"
 dotenv.config()
 
 const PORT = process.env.PORT
@@ -13,8 +14,9 @@ const PORT = process.env.PORT
 async function StartServer(){
     try {
         await connectDB()
+        const httpServer= http.createServer(app)
 
-        const HttpServer= http.createServer(app)
+        initSocket(httpServer);
 
         const authRouter = authRouterFactory(container)
         const userRouter = userRouterFactory(container)
@@ -24,7 +26,7 @@ async function StartServer(){
 
         app.use(errorHandlerMiddleware)
 
-        HttpServer.listen(PORT, ()=> console.log(`Server running on : http://localhost:${PORT}`))
+        httpServer.listen(PORT, ()=> console.log(`Server running on : http://localhost:${PORT}`))
     } catch (error) {
         console.error("Error in start Server!", error)
     }
