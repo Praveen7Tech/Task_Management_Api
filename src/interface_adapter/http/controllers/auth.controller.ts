@@ -95,8 +95,8 @@ export class AuthController{
 
     logout = async(req: Request, res:Response, next: NextFunction)=>{
         try {
-            res.clearCookie("accessToken")
-            res.clearCookie('refreshToken');
+            res.clearCookie("accessToken",COOKIE_OPTIONS)
+            res.clearCookie('refreshToken',COOKIE_OPTIONS);
             return res.status(StatusCode.OK).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
         } catch (error) {
             next(error)
