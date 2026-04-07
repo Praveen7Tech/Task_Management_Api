@@ -55,7 +55,7 @@ export class UserController{
 
             const task = await this._updateTaskUseCase.execute(taskId, userId, updateData);
 
-            return res.status(StatusCode.CREATED).json({ success: true, data: task });
+            return res.status(StatusCode.CREATED).json({ message: "Task Updated Successfully."});
         } catch (error) {
             next(error);
         }

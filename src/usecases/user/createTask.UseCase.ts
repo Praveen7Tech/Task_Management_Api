@@ -4,11 +4,13 @@ import { NotFoundError } from "../../common/errors/common.error";
 import { Task } from "../../domain/entities/task";
 import { ITaskRepository } from "../../domain/repositories/task.repository";
 import { IUserRepository } from "../../domain/repositories/user.repository";
+import { INotificationService } from "../../domain/services/notification.service";
 
 export class CreateTaskUseCase implements ICreateTaskUseCase{
     constructor(
         private readonly _userRepository: IUserRepository,
-        private readonly _taskRepository: ITaskRepository
+        private readonly _taskRepository: ITaskRepository,
+        private readonly _notificationService: INotificationService
     ){}
 
     async execute(userId: string, data: TaskData): Promise<TaskData> {
@@ -22,11 +24,13 @@ export class CreateTaskUseCase implements ICreateTaskUseCase{
         const taskToCreate: Partial<Task> = {
             ...data,
             userId: user.id, 
-            completed: false 
         };
 
         //  Persistence: Delegate to Repository
         const createdTask = await this._taskRepository.create(taskToCreate);
+
+        // emit socket notification event
+        await this._notificationService.broadcastTaskActivity(user.id,user.name,data.title,"CREATE")
 
         return createdTask;
     }
