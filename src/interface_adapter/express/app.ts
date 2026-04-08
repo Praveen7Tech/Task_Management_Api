@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 
 const CLIENT_URL = process.env.NODE_ENV === "development" ? process.env.CLIENT_URL : process.env.CLIENT_URL_PROD
+console.log("frontend url : ", CLIENT_URL)
 
 const app = express()
 
