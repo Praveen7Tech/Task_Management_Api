@@ -11,7 +11,7 @@ import { initSocket } from "./infrastructure/config/socket.io"
 import { loggerMiddleware } from "./interface_adapter/http/middlewares/logger.middleware"
 
 
-const PORT = process.env.PORT
+const PORT = Number(process.env.PORT)
 
 async function StartServer(){
     try {
@@ -29,7 +29,7 @@ async function StartServer(){
 
         app.use(errorHandlerMiddleware)
 
-        httpServer.listen(PORT, ()=> console.log(`Server running on : http://localhost:${PORT}`))
+        httpServer.listen(PORT,"0.0.0.0", ()=> console.log(`Server running on : http://localhost:${PORT}`))
     } catch (error) {
         console.error("Error in start Server!", error)
     }
