@@ -56,7 +56,7 @@ export class UserController{
 
             const task = await this._updateTaskUseCase.execute(taskId, userId, updateData);
 
-            return res.status(StatusCode.CREATED).json({ message: "Task Updated Successfully."});
+            return res.status(StatusCode.CREATED).json({ message: MESSAGES.TASK_UPDATED_SUCCESS});
         } catch (error) {
             next(error);
         }
@@ -69,7 +69,7 @@ export class UserController{
 
             await this._deleteTaskUseCase.execute(taskId, userId);
 
-            return res.status(StatusCode.OK).json({message: "Task deleted successfully" });
+            return res.status(StatusCode.OK).json({message: MESSAGES.TASK_DELETED });
         } catch (error) {
             next(error);
         }
