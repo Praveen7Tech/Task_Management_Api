@@ -1,5 +1,5 @@
 import { IUpdateTaskUseCase } from "../../application/interfaces/usecase/user/updateTask.usecase.interface";
-import { NotFoundError } from "../../common/errors/common.error";
+import { AlreadyExistError, NotFoundError } from "../../common/errors/common.error";
 import { Task } from "../../domain/entities/task";
 import { ITaskRepository } from "../../domain/repositories/task.repository";
 import { IUserRepository } from "../../domain/repositories/user.repository";
@@ -18,6 +18,14 @@ export class UpdateTaskUseCase implements IUpdateTaskUseCase {
 
         const task = await this._taskRepository.findById(taskId);
         if (!task) throw new NotFoundError("Task not found");
+
+        if(data?.title && data.title !== task.title){
+            const existingTask = await this._taskRepository.findByName(data.title)
+
+             if (existingTask && existingTask.id !== taskId) {
+                throw new AlreadyExistError("Task already exists, choose an alternative name");
+            }
+        }
         
         await this._taskRepository.update(taskId, data);
         

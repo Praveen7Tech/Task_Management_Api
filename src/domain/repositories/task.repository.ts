@@ -10,4 +10,5 @@ export interface ITaskRepository {
     getStats(): Promise<TaskStats>;
     update(id: string, data: Partial<Task>): Promise<Task | null>
     delete(id: string): Promise<void>;
+    findByName(name: string): Promise<Task | null>
 }

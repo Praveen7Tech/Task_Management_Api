@@ -37,27 +37,3 @@ export class ExpiredError extends DomainError {
         super(message, StatusCode.EXPIRED)
     }
 }
-
-export class IncorrectPasswordError extends DomainError{
-    constructor(message = "incorrect"){
-        super(message, StatusCode.BAD_REQUEST)
-    }
-}
-
-export class ForbiddenError extends DomainError {
-    constructor(){
-        super("Forbidden!", StatusCode.FORBIDDEN)
-    }
-}
-
-export class BlockedAccountError extends DomainError{
-    constructor(){
-        super("Your account account has been blocked by an administrator, plase contact the helpline!", StatusCode.FORBIDDEN)
-    }
-}
-
-export class InvalidError extends DomainError {
-    constructor(message: string){
-        super(message, StatusCode.BAD_REQUEST)
-    }
-}
