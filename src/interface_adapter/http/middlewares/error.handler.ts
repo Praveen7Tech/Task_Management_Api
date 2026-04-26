@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodError } from "zod";
+import { success, ZodError } from "zod";
 import { StatusCode } from "../../../common/constants/status.enum";
 import { DomainError } from "../../../common/errors/base.error";
 
@@ -23,6 +23,7 @@ export const errorHandlerMiddleware = (err: Error, _req: Request, res: Response,
     const errorMessage = err instanceof Error ? err.message : 'Internal server error';
     
     return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ 
+        success: false,
         message: errorMessage 
     });
 };

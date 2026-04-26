@@ -1,6 +1,6 @@
 import { TaskData } from "../../application/dto/user/task.type";
 import { ICreateTaskUseCase } from "../../application/interfaces/usecase/user/createTask.usecase.interface";
-import { NotFoundError } from "../../common/errors/common.error";
+import { AlreadyExistError, NotFoundError } from "../../common/errors/common.error";
 import { Task } from "../../domain/entities/task";
 import { ITaskRepository } from "../../domain/repositories/task.repository";
 import { IUserRepository } from "../../domain/repositories/user.repository";
@@ -19,6 +19,9 @@ export class CreateTaskUseCase implements ICreateTaskUseCase{
         if (!user) {
             throw new NotFoundError("User not found for creating the task");
         }
+
+        const taskNameExist = await this._taskRepository.findByName(data.title)
+        if(taskNameExist) throw new AlreadyExistError("Task already exist , choose a alternative Name")
 
         // Map DTO to a format the Repository understands
         const taskToCreate: Partial<Task> = {

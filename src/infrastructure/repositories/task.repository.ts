@@ -95,4 +95,8 @@ export class TaskRepository implements ITaskRepository {
             doc.category
         );
     }
+
+    async findByName(name: string): Promise<Task | null> {
+        return await TaskModel.findOne({title: name})
+    }
 }
